@@ -17,6 +17,7 @@ const CONFIG = {
     introSpring: "assets/scene-intro-spring.png",
     introSpringWonder: "assets/scene-intro-spring-wonder.png",
     introSpringSpecialMoments: "assets/scene-intro-spring-special.png",
+    gardenSpringIntro: "assets/scene-garden-spring-intro.png",
     introNatashaSurprised: "assets/scene-intro-natasha-surprised.png",
     introNatashaTrust: "assets/scene-intro-natasha-trust.png",
     keySigil: "assets/key-sigil.svg",
@@ -101,12 +102,12 @@ const ui = {
   portraitStage: document.getElementById("portraitStage"),
   portraitSlots: {
     left: document.getElementById("portraitSlotLeft"),
-    center: document.getElementById("portraitSlotCenter"),
+    
     right: document.getElementById("portraitSlotRight")
   },
   portraitImages: {
     left: document.getElementById("portraitImageLeft"),
-    center: document.getElementById("portraitImageCenter"),
+    
     right: document.getElementById("portraitImageRight")
   },
   keySigil: document.getElementById("keySigil"),
@@ -288,10 +289,6 @@ const STORY = {
       return "Все фрагменты собраны. Весна готовит главный момент.";
     },
     background: "crossroads",
-    character: {
-      src: () => CONFIG.assets.heroine,
-      alt: () => `Портрет героини ${CONFIG.heroineName}`
-    },
     steps: (currentState) => buildCrossroadsSteps(currentState),
     nextScene: "convergence"
   },
@@ -301,10 +298,7 @@ const STORY = {
     location: "Цветочный сад",
     hint: "Нежность, спокойствие и красота, которая раскрывается без спешки.",
     background: "garden",
-    character: {
-      src: () => CONFIG.assets.heroine,
-      alt: () => `Портрет героини ${CONFIG.heroineName}`
-    },
+     
     rewardFragment: "garden",
     locationId: "garden",
     returnTo: "crossroads",
@@ -312,11 +306,27 @@ const STORY = {
       {
         speaker: "spring",
         tone: "лепестки и свет",
+        portraits: {
+          right: {
+            role: "spring",
+            src: () => CONFIG.assets.gardenSpringIntro,
+            fallbackSrc: () => CONFIG.assets.introSpring,
+            alt: "Весна в цветочном саду"
+          }
+        },
         text: "Здесь все цветет не громко. Бутоны будто учатся говорить шепотом, и от этого сад кажется еще красивее."
       },
       {
         speaker: "spring",
         tone: "тихая красота",
+        portraits: {
+          right: {
+            role: "spring",
+            src: () => CONFIG.assets.gardenSpringIntro,
+            fallbackSrc: () => CONFIG.assets.introSpring,
+            alt: "Весна в цветочном саду"
+          }
+        },
         text: () => `${CONFIG.heroineName}, посмотри, как сад тянется к свету. Не рывком, не с усилием, а очень бережно. Красота часто растет именно так.`
       },
       {
@@ -427,10 +437,7 @@ const STORY = {
     location: "Уютный домик",
     hint: "Тепло окна, светлый воздух и право немного выдохнуть.",
     background: "cottage",
-    character: {
-      src: () => CONFIG.assets.heroine,
-      alt: () => `Портрет героини ${CONFIG.heroineName}`
-    },
+     
     rewardFragment: "cottage",
     locationId: "cottage",
     returnTo: "crossroads",
@@ -553,10 +560,7 @@ const STORY = {
     location: "Весенний парк",
     hint: "Свежий воздух, живые дорожки и шаги, которым не нужно спешить.",
     background: "park",
-    character: {
-      src: () => CONFIG.assets.heroine,
-      alt: () => `Портрет героини ${CONFIG.heroineName}`
-    },
+     
     rewardFragment: "park",
     locationId: "park",
     returnTo: "crossroads",
@@ -679,10 +683,7 @@ const STORY = {
     location: "Общая линия",
     hint: "Лепесток, искра и шаг складываются в одну тихую правду.",
     background: "key",
-    character: {
-      src: () => CONFIG.assets.heroine,
-      alt: () => `Портрет героини ${CONFIG.heroineName}`
-    },
+     
     steps: [
       {
         speaker: "spring",
@@ -731,10 +732,7 @@ const STORY = {
     location: "Ключ надежды",
     hint: "Из собранных смыслов рождается новая возможность идти дальше.",
     background: "key",
-    character: {
-      src: () => CONFIG.assets.heroine,
-      alt: () => `Портрет героини ${CONFIG.heroineName}`
-    },
+     
     steps: [
       {
         speaker: "spring",
@@ -776,10 +774,7 @@ const STORY = {
     location: "Светлый март",
     hint: "Поздравление, весенний воздух и место для личных слов.",
     background: "finale",
-    character: {
-      src: () => CONFIG.assets.heroine,
-      alt: () => `Портрет героини ${CONFIG.heroineName}`
-    },
+     
     steps: [
       {
         speaker: "spring",
@@ -1060,11 +1055,10 @@ function clearPortraitStage() {
   ui.portraitStage.classList.remove(
     "dual-portraits",
     "left-portrait-visible",
-    "right-portrait-visible",
-    "center-portrait-visible"
+    "right-portrait-visible"
   );
 
-  ["left", "center", "right"].forEach((slotName) => {
+  ["left", "right"].forEach((slotName) => {
     const slotElement = ui.portraitSlots[slotName];
     const imageElement = ui.portraitImages[slotName];
 
@@ -1084,15 +1078,15 @@ function applyPortraitLayout(scene = null, node = null) {
 
   const activeScene = scene || STORY[state.currentSceneId] || null;
   const layout = buildPortraitLayout(activeScene, node);
-  const visibleSlots = ["left", "center", "right"].filter((slotName) => Boolean(layout[slotName]));
+  const visibleSlots = ["left", "right"].filter((slotName) => Boolean(layout[slotName]));
   const activeSlot = resolveActivePortraitSlot(layout, node);
 
-  ui.portraitStage.classList.toggle("dual-portraits", visibleSlots.length >= 2 && !layout.center);
+  ui.portraitStage.classList.toggle("dual-portraits", visibleSlots.length >= 2);
   ui.portraitStage.classList.toggle("left-portrait-visible", Boolean(layout.left));
   ui.portraitStage.classList.toggle("right-portrait-visible", Boolean(layout.right));
-  ui.portraitStage.classList.toggle("center-portrait-visible", Boolean(layout.center));
+  
 
-  ["left", "center", "right"].forEach((slotName) => {
+  ["left", "right"].forEach((slotName) => {
     const slotElement = ui.portraitSlots[slotName];
     const imageElement = ui.portraitImages[slotName];
     const portrait = layout[slotName];
@@ -1128,13 +1122,11 @@ function applyPortraitLayout(scene = null, node = null) {
 function buildPortraitLayout(scene, node) {
   const layout = {
     left: null,
-    center: null,
+    
     right: null
   };
 
-  if (scene?.character) {
-    layout.center = scene.character;
-  }
+ 
 
   mergePortraits(layout, scene?.portraits);
   mergePortraits(layout, node?.portraits);
@@ -1145,12 +1137,12 @@ function buildPortraitLayout(scene, node) {
   if (portraitsHidden) {
     return {
       left: null,
-      center: null,
+
       right: null
     };
   }
 
-  if (!normalizedLayout.left && !normalizedLayout.center && !normalizedLayout.right) {
+  if (!normalizedLayout.left && !normalizedLayout.right) {
     normalizedLayout.left = {
       role: "heroine",
       src: () => CONFIG.assets.heroine
@@ -1165,7 +1157,7 @@ function mergePortraits(target, source) {
     return;
   }
 
-  ["left", "center", "right"].forEach((slotName) => {
+  ["left", "right"].forEach((slotName) => {
     if (Object.prototype.hasOwnProperty.call(source, slotName)) {
       target[slotName] = source[slotName];
     }
@@ -1175,12 +1167,12 @@ function mergePortraits(target, source) {
 function normalizePortraitSides(layout) {
   const normalized = {
     left: null,
-    center: null,
+    
     right: null
   };
   const assignedPortraits = new Set();
 
-  const portraits = ["left", "center", "right"]
+  const portraits = ["left", "right"]
     .map((slotName) => layout[slotName])
     .filter(Boolean);
 
@@ -1197,18 +1189,14 @@ function normalizePortraitSides(layout) {
     assignedPortraits.add(springPortrait);
   }
 
-  ["left", "center", "right"].forEach((slotName) => {
+  ["left", "right"].forEach((slotName) => {
     const portrait = layout[slotName];
 
     if (!portrait || assignedPortraits.has(portrait)) {
       return;
     }
 
-    if (!normalized.center) {
-      normalized.center = portrait;
-      assignedPortraits.add(portrait);
-      return;
-    }
+    
 
     if (!normalized.left) {
       normalized.left = portrait;

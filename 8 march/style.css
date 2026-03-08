@@ -422,15 +422,7 @@ button {
   justify-items: start;
 }
 
-.stage-portrait-slot-center {
-  left: 50%;
-  transform: translateX(-50%) translateY(26px) scale(0.96);
-  justify-items: center;
-}
 
-.stage-portrait-slot-center.visible {
-  transform: translateX(-50%) translateY(0) scale(1);
-}
 
 .stage-portrait-slot-right {
   right: var(--portrait-side-gap);
