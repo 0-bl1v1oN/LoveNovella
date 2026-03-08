@@ -24,8 +24,8 @@ const CONFIG = {
     backgrounds: {
       start: "assets/bg-start.png",
       awakening: "assets/bg-awakening-custom.png",
-      crossroads: "assets/bg-crossroads.svg",
-      garden: "assets/bg-garden.svg",
+      crossroads: "assets/bg-crossroads-custom.png",
+      garden: "assets/bg-garden-custom.png",
       cottage: "assets/bg-cottage.svg",
       park: "assets/bg-park.svg",
       key: "assets/bg-key.svg",
@@ -814,17 +814,20 @@ function buildCrossroadsSteps(currentState) {
       {
         speaker: "spring",
         tone: "первая развилка",
+        hidePortraits: true,
         text: "Смотри: перед нами сад, домик и парк. В каждом месте спрятано что-то для твоего сердца."
       },
       {
         speaker: "spring",
         tone: "без правильного ответа",
+        hidePortraits: true,
         text: "Не нужно выбирать идеально. Просто иди туда, куда тебя сейчас мягко тянет."
       },
       {
         type: "choice",
         speaker: "spring",
         tone: "куда идти дальше",
+        hidePortraits: true,
         text: "Куда отправимся сначала?",
         layout: "locations",
         options
@@ -1136,6 +1139,16 @@ function buildPortraitLayout(scene, node) {
   mergePortraits(layout, scene?.portraits);
   mergePortraits(layout, node?.portraits);
   const normalizedLayout = normalizePortraitSides(layout);
+
+  const portraitsHidden = Boolean(scene?.hidePortraits || node?.hidePortraits);
+
+  if (portraitsHidden) {
+    return {
+      left: null,
+      center: null,
+      right: null
+    };
+  }
 
   if (!normalizedLayout.left && !normalizedLayout.center && !normalizedLayout.right) {
     normalizedLayout.left = {
