@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="air" x1="230" y1="52" x2="1396" y2="864" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe8ed"/>
+      <stop offset="0.5" stop-color="#fffaf1"/>
+      <stop offset="1" stop-color="#e4f2de"/>
+    </linearGradient>
+    <radialGradient id="center" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(800 390) rotate(90) scale(270 310)">
+      <stop stop-color="#fff6d1"/>
+      <stop offset="0.52" stop-color="#fff3d1" stop-opacity="0.58"/>
+      <stop offset="1" stop-color="#fff3d1" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#air)"/>
+  <ellipse cx="800" cy="390" rx="370" ry="290" fill="url(#center)"/>
+  <g filter="url(#blur)" opacity="0.64">
+    <circle cx="590" cy="288" r="128" fill="#ffdce7"/>
+    <circle cx="1002" cy="264" r="134" fill="#d8ecd2"/>
+    <circle cx="804" cy="198" r="122" fill="#fff2c6"/>
+    <circle cx="796" cy="666" r="164" fill="#f8dbd8"/>
+  </g>
+  <path d="M0 687C194 646 401 662 585 712C788 766 996 776 1191 738C1362 705 1485 706 1600 724V900H0V687Z" fill="#deedd9"/>
+  <path d="M0 741C197 715 412 726 645 785C859 838 1101 833 1313 787C1435 760 1525 758 1600 768V900H0V741Z" fill="#f6d7e1" opacity="0.72"/>
+  <g opacity="0.8">
+    <path d="M419 292C491 265 555 270 616 310" stroke="#a1c69c" stroke-width="7" stroke-linecap="round"/>
+    <path d="M998 319C1070 278 1140 268 1214 287" stroke="#a1c69c" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <g opacity="0.84">
+    <circle cx="645" cy="310" r="11" fill="#fff1d1"/>
+    <circle cx="716" cy="237" r="13" fill="#ffe5ec"/>
+    <circle cx="886" cy="254" r="12" fill="#fef0d7"/>
+    <circle cx="964" cy="322" r="10" fill="#ffe7ee"/>
+    <circle cx="799" cy="438" r="18" fill="#fff7e0"/>
+  </g>
+</svg>

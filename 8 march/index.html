@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light only">
+  <title>Когда Весна говорит с Наташей</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <div class="scene-backdrop" aria-hidden="true">
+      <div class="backdrop-layer active" id="bgLayerA"></div>
+      <div class="backdrop-layer" id="bgLayerB"></div>
+      <div class="backdrop-vignette"></div>
+      <div class="backdrop-glow"></div>
+      <div class="petal-layer" id="petalLayer"></div>
+    </div>
+
+    <header class="topbar">
+      <div class="quest-badge panel-card">
+        <span class="small-label">Весенний путь</span>
+        <strong id="progressLabel">Пробуждение</strong>
+      </div>
+
+      <div class="control-cluster">
+        <button class="control-button" id="musicToggle" type="button">Музыка: авто</button>
+        <button class="control-button" id="restartButton" type="button">Начать заново</button>
+      </div>
+    </header>
+
+    <main class="story-stage">
+      <section class="start-screen" id="startScreen">
+        <div class="start-card panel-card">
+          <p class="eyebrow">Локальная визуальная новелла</p>
+          <h1>Когда Весна говорит с Наташей</h1>
+          <p class="start-lead">
+            Нежная интерактивная история о свете, тепле, новых дверях и мягкой весне,
+            которая идет рядом и говорит бережно.
+          </p>
+          <p class="start-hint">
+            История работает полностью локально. Музыка подключается из папки <code>assets</code>,
+            если вы добавите туда свой трек.
+          </p>
+          <button class="start-button" id="startButton" type="button">Начать историю</button>
+        </div>
+      </section>
+
+      <section class="scene-layout" aria-live="polite">
+        <aside class="status-panel">
+          <div class="panel-card">
+            <span class="small-label">Локация</span>
+            <strong id="locationLabel">Особенное утро</strong>
+            <p class="panel-copy" id="sceneHint">Весна только-только подходит ближе.</p>
+          </div>
+
+          <div class="panel-card">
+            <span class="small-label">Фрагменты ключа</span>
+            <ul class="fragment-list" id="fragmentList"></ul>
+          </div>
+        </aside>
+
+        <section class="character-panel" aria-label="Сцена">
+          <div class="character-glow"></div>
+          <div class="key-sigil" id="keySigil" aria-hidden="true">
+            <img src="assets/key-sigil.svg" alt="">
+            <span>Ключ надежды</span>
+          </div>
+        </section>
+      </section>
+
+      <div class="portrait-stage" id="portraitStage" aria-hidden="true">
+        <div class="stage-portrait-slot stage-portrait-slot-left" id="portraitSlotLeft">
+          <img class="stage-portrait stage-portrait-left" id="portraitImageLeft" src="assets/heroine-portrait.svg" alt="">
+        </div>
+        <div class="stage-portrait-slot stage-portrait-slot-center" id="portraitSlotCenter">
+          <img class="stage-portrait stage-portrait-center" id="portraitImageCenter" src="assets/heroine-portrait.svg" alt="Портрет героини">
+        </div>
+        <div class="stage-portrait-slot stage-portrait-slot-right" id="portraitSlotRight">
+          <img class="stage-portrait stage-portrait-right" id="portraitImageRight" src="assets/heroine-portrait.svg" alt="">
+        </div>
+      </div>
+
+      <section class="dialog-panel panel-card hidden" id="dialogPanel">
+        <div class="speaker-row">
+          <strong id="speakerName">Весна</strong>
+          <span id="toneLabel">мягкий свет</span>
+        </div>
+
+        <p class="dialog-text" id="dialogText"></p>
+
+        <div class="choice-container" id="choiceContainer"></div>
+
+        <div class="dialog-actions">
+          <button class="next-button" id="nextButton" type="button">Далее</button>
+        </div>
+      </section>
+
+      <section class="letter-panel panel-card hidden" id="letterPanel">
+        <p class="small-label">Личное письмо</p>
+        <h2>От сердца к сердцу</h2>
+        <p id="letterText"></p>
+      </section>
+
+      <div class="notice" id="noticeBox" role="status" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <audio id="bgMusic" loop preload="none"></audio>
+
+  <noscript>
+    Для этой истории нужен включенный JavaScript.
+  </noscript>
+
+  <script src="script.js"></script>
+</body>
+</html>

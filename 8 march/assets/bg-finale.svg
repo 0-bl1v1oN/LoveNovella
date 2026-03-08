@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="air" x1="180" y1="40" x2="1420" y2="860" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe8ed"/>
+      <stop offset="0.48" stop-color="#fffaf1"/>
+      <stop offset="1" stop-color="#e4f4de"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1220 165) rotate(90) scale(250 250)">
+      <stop stop-color="#fff6cb"/>
+      <stop offset="1" stop-color="#fff6cb" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#air)"/>
+  <circle cx="1220" cy="165" r="250" fill="url(#sun)"/>
+  <g filter="url(#soft)" opacity="0.66">
+    <circle cx="334" cy="195" r="152" fill="#ffdbe6"/>
+    <circle cx="808" cy="154" r="128" fill="#fff3ca"/>
+    <circle cx="1290" cy="304" r="162" fill="#d7ebd1"/>
+  </g>
+  <path d="M0 672C196 624 372 640 572 688C779 738 1013 751 1198 716C1362 684 1488 684 1600 709V900H0V672Z" fill="#dff0da"/>
+  <path d="M0 735C207 703 398 722 606 779C822 836 1079 829 1289 787C1418 760 1516 760 1600 771V900H0V735Z" fill="#f8dbe4" opacity="0.72"/>
+  <g opacity="0.82">
+    <path d="M122 486C213 449 308 446 398 476" stroke="#99bf93" stroke-width="7" stroke-linecap="round"/>
+    <path d="M1467 482C1378 443 1283 438 1189 461" stroke="#99bf93" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <g opacity="0.9">
+    <circle cx="241" cy="355" r="26" fill="#ffe0ea"/>
+    <circle cx="308" cy="312" r="21" fill="#ffeaf1"/>
+    <circle cx="364" cy="365" r="24" fill="#ffdde8"/>
+    <circle cx="1249" cy="337" r="24" fill="#ffe2eb"/>
+    <circle cx="1312" cy="297" r="21" fill="#ffe9f0"/>
+    <circle cx="1378" cy="347" r="25" fill="#ffdde8"/>
+    <circle cx="796" cy="282" r="20" fill="#fff3d3"/>
+    <circle cx="852" cy="239" r="16" fill="#ffe6ec"/>
+  </g>
+</svg>
