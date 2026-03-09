@@ -13,13 +13,16 @@ const CONFIG = {
   springName: "Весна",
   personalLetter: "Здесь будет твое личное письмо. Замени этот текст в CONFIG.personalLetter внутри script.js, и оно автоматически появится в финале.",
   assets: {
-    heroine: "assets/heroine-portrait.svg",
+    
     introSpring: "assets/scene-intro-spring.png",
     introSpringWonder: "assets/scene-intro-spring-wonder.png",
     introSpringSpecialMoments: "assets/scene-intro-spring-special.png",
+    gardenSpringChoice: "assets/scene-garden-spring-choice.png",
+    gardenSpringTender: "assets/scene-garden-spring-tender.png",
     gardenSpringIntro: "assets/scene-garden-spring-intro.png",
     introNatashaSurprised: "assets/scene-intro-natasha-surprised.png",
     introNatashaTrust: "assets/scene-intro-natasha-trust.png",
+    gardenNatashaSmile: "assets/scene-garden-natasha-smile.png",
     gardenNatashaCalm: "assets/scene-garden-natasha-calm.png",
     keySigil: "assets/key-sigil.svg",
     music: "assets/music-spring.mp3",
@@ -347,6 +350,14 @@ const STORY = {
         type: "choice",
         speaker: "spring",
         tone: "первое прикосновение",
+        portraits: {
+          right: {
+            role: "spring",
+            src: () => CONFIG.assets.gardenSpringChoice,
+            fallbackSrc: () => CONFIG.assets.gardenSpringIntro,
+            alt: "Весна в цветочном саду"
+          }
+        },
         text: "Что тебе хочется сделать среди этих цветов?",
         options: [
           {
@@ -356,6 +367,14 @@ const STORY = {
               {
                 speaker: "spring",
                 tone: "бережность",
+                portraits: {
+                  right: {
+                    role: "spring",
+                    src: () => CONFIG.assets.gardenSpringTender,
+                    fallbackSrc: () => CONFIG.assets.gardenSpringChoice,
+                    alt: "Весна в цветочном саду"
+                  }
+                },
                 text: "Иногда нежность начинается с такого простого касания. Ты умеешь быть бережной даже молча."
               }
             ],
@@ -386,11 +405,27 @@ const STORY = {
       {
         speaker: "spring",
         tone: "мягкий комплимент",
+        portraits: {
+          right: {
+            role: "spring",
+            src: () => CONFIG.assets.gardenSpringTender,
+            fallbackSrc: () => CONFIG.assets.gardenSpringChoice,
+            alt: "Весна в цветочном саду"
+          }
+        },
         text: "Цветам не нужно доказывать, что они красивы. Они просто раскрываются в свое время. С людьми, которым дана настоящая мягкость, часто так же."
       },
       {
         speaker: "heroine",
         tone: "едва заметная улыбка",
+        portraits: {
+          left: {
+            role: "heroine",
+            src: () => CONFIG.assets.gardenNatashaSmile,
+            fallbackSrc: () => CONFIG.assets.gardenNatashaCalm,
+            alt: () => `${CONFIG.heroineName} с едва заметной улыбкой`
+          }
+        },
         text: "Хочется помнить об этом чаще. И не спорить с собой каждый раз."
       },
       {
@@ -1151,12 +1186,7 @@ function buildPortraitLayout(scene, node) {
     };
   }
 
-  if (!normalizedLayout.left && !normalizedLayout.right) {
-    normalizedLayout.left = {
-      role: "heroine",
-      src: () => CONFIG.assets.heroine
-    };
-  }
+  
 
   return normalizedLayout;
 }
@@ -1239,7 +1269,7 @@ function resolveActivePortraitSlot(layout, node) {
 
 function getPortraitFallbackSource(portrait) {
   return resolveCharacterValue(portrait?.fallbackSrc)
-    || (portrait?.role === "spring" ? CONFIG.assets.introSpring : CONFIG.assets.heroine);
+    || (portrait?.role === "spring" ? CONFIG.assets.introSpring : CONFIG.assets.introNatashaSurprised);
 }
 
 function getPortraitFallbackAlt(portrait) {
@@ -1252,7 +1282,7 @@ function getPortraitFallbackAlt(portrait) {
 
 function handlePortraitImageError(event) {
   const imageElement = event.currentTarget;
-  const fallbackSource = imageElement.dataset.fallbackSrc || CONFIG.assets.heroine;
+  const fallbackSource = imageElement.dataset.fallbackSrc || CONFIG.assets.introNatashaSurprised;
   const fallbackAlt = imageElement.dataset.fallbackAlt || `Портрет героини ${CONFIG.heroineName}`;
   const currentSource = imageElement.getAttribute("src");
 
