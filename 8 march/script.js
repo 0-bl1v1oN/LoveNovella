@@ -34,6 +34,7 @@ const CONFIG = {
       garden: "assets/bg-garden-custom.png",
       cottage: "assets/bg-cottage-custom.png",
       park: "assets/bg-park-custom.png",
+      collectedLight: "assets/bg-collected-light.png",
       key: "assets/bg-key.svg",
       finale: "assets/bg-convergence-custom.png"
     }
