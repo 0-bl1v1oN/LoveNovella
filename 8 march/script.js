@@ -19,6 +19,7 @@ const CONFIG = {
     introSpringSpecialMoments: "assets/scene-intro-spring-special.png",
     gardenSpringChoice: "assets/scene-garden-spring-choice.png",
     gardenSpringTender: "assets/scene-garden-spring-tender.png",
+    gardenSpringPersonalGift: "assets/scene-garden-spring-personal-gift.png",
     gardenSpringIntro: "assets/scene-garden-spring-intro.png",
     introNatashaSurprised: "assets/scene-intro-natasha-surprised.png",
     introNatashaTrust: "assets/scene-intro-natasha-trust.png",
@@ -128,6 +129,10 @@ const ui = {
   letterText: document.getElementById("letterText"),
   musicToggle: document.getElementById("musicToggle"),
   restartButton: document.getElementById("restartButton"),
+  quickNav: document.getElementById("quickNav"),
+  jumpSceneSelect: document.getElementById("jumpSceneSelect"),
+  jumpStepSelect: document.getElementById("jumpStepSelect"),
+  jumpToNodeButton: document.getElementById("jumpToNodeButton"),
   noticeBox: document.getElementById("noticeBox"),
   bgMusic: document.getElementById("bgMusic")
 };
@@ -441,6 +446,14 @@ const STORY = {
               {
                 speaker: "spring",
                 tone: "очень лично",
+                portraits: {
+                  right: {
+                    role: "spring",
+                    src: () => CONFIG.assets.gardenSpringPersonalGift,
+                    fallbackSrc: () => CONFIG.assets.gardenSpringTender,
+                    alt: "Весна в цветочном саду"
+                  }
+                },
                 text: () => `И правильно. В тебе так много мягкого света, ${CONFIG.heroineName}, что весне легко узнавать тебя среди тысячи лиц.`
               }
             ],
@@ -471,6 +484,14 @@ const STORY = {
       {
         speaker: "spring",
         tone: "дар сада",
+        portraits: {
+          right: {
+            role: "spring",
+            src: () => CONFIG.assets.gardenSpringPersonalGift,
+            fallbackSrc: () => CONFIG.assets.gardenSpringTender,
+            alt: "Весна в цветочном саду"
+          }
+        },
         text: () => `Возьми этот Лепесток доверия. Пусть он напоминает тебе про ${state.memories.gardenEssence || "нежность"}, и про то, что красота может быть спокойной, настоящей и очень живой.`
       }
     ]
@@ -956,6 +977,9 @@ function init() {
   ui.nextButton.addEventListener("click", handleNext);
   ui.musicToggle.addEventListener("click", toggleMusic);
   ui.restartButton.addEventListener("click", restartStory);
+  ui.jumpSceneSelect.addEventListener("change", syncJumpStepOptions);
+  ui.jumpToNodeButton.addEventListener("click", jumpToSelectedNode);
+  populateJumpSceneOptions();
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -993,6 +1017,93 @@ function init() {
   });
 
   startPetals();
+}
+
+function getSceneStepLabel(step, index) {
+  const speaker = step?.speaker === "spring"
+    ? CONFIG.springName
+    : (step?.speaker === "heroine" ? CONFIG.heroineName : "Сцена");
+  const tone = step?.tone || (step?.type === "choice" ? "выбор" : "шаг");
+  return `${index + 1}. ${speaker} · ${tone}`;
+}
+
+function resolveSceneStepsForJump(sceneId) {
+  const scene = STORY[sceneId];
+
+  if (!scene) {
+    return [];
+  }
+
+  if (typeof scene.steps === "function") {
+    return scene.steps(state);
+  }
+
+  return scene.steps || [];
+}
+
+function populateJumpSceneOptions() {
+  const currentSceneId = state.currentSceneId || "intro";
+  ui.jumpSceneSelect.innerHTML = "";
+
+  Object.entries(STORY).forEach(([sceneId, scene]) => {
+    const option = document.createElement("option");
+    option.value = sceneId;
+    option.textContent = scene.label || sceneId;
+    if (sceneId === currentSceneId) {
+      option.selected = true;
+    }
+    ui.jumpSceneSelect.appendChild(option);
+  });
+
+  syncJumpStepOptions();
+}
+
+function syncJumpStepOptions() {
+  const sceneId = ui.jumpSceneSelect.value || "intro";
+  const steps = resolveSceneStepsForJump(sceneId);
+  const activeIndex = sceneId === state.currentSceneId ? state.stepIndex : 0;
+
+  ui.jumpStepSelect.innerHTML = "";
+
+  steps.forEach((step, index) => {
+    const option = document.createElement("option");
+    option.value = String(index);
+    option.textContent = getSceneStepLabel(step, index);
+    if (index === activeIndex) {
+      option.selected = true;
+    }
+    ui.jumpStepSelect.appendChild(option);
+  });
+}
+
+function jumpToSelectedNode() {
+  stopTyping(false, false);
+
+  const sceneId = ui.jumpSceneSelect.value || "intro";
+  const stepIndex = Math.max(0, Number.parseInt(ui.jumpStepSelect.value || "0", 10) || 0);
+
+  if (!state.storyStarted) {
+    resetStoryState();
+    state.storyStarted = true;
+    ui.startScreen.classList.add("hidden");
+    ui.dialogPanel.classList.remove("hidden");
+
+    if (state.musicWanted) {
+      attemptMusicPlayback();
+    }
+  }
+
+  enterScene(sceneId);
+  const maxIndex = Math.max(0, state.currentSteps.length - 1);
+  state.stepIndex = Math.min(stepIndex, maxIndex);
+  renderCurrentNode();
+
+  if (ui.quickNav.open) {
+    ui.quickNav.open = false;
+  }
+
+  syncJumpStepOptions();
+  showNotice(`Переход: ${STORY[sceneId].label}, шаг ${state.stepIndex + 1}.`);
 }
 
 function beginStory() {
