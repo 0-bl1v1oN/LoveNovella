@@ -32,10 +32,10 @@ const CONFIG = {
       awakening: "assets/bg-awakening-custom.png",
       crossroads: "assets/bg-crossroads-custom.png",
       garden: "assets/bg-garden-custom.png",
-      cottage: "assets/bg-cottage.svg",
-      park: "assets/bg-park.svg",
+      cottage: "assets/bg-cottage-custom.png",
+      park: "assets/bg-park-custom.png",
       key: "assets/bg-key.svg",
-      finale: "assets/bg-finale.svg"
+      finale: "assets/bg-convergence-custom.png"
     }
   },
   textSpeed: 16
