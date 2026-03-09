@@ -20,6 +20,7 @@ const CONFIG = {
     gardenSpringIntro: "assets/scene-garden-spring-intro.png",
     introNatashaSurprised: "assets/scene-intro-natasha-surprised.png",
     introNatashaTrust: "assets/scene-intro-natasha-trust.png",
+    gardenNatashaCalm: "assets/scene-garden-natasha-calm.png",
     keySigil: "assets/key-sigil.svg",
     music: "assets/music-spring.mp3",
     backgrounds: {
@@ -332,6 +333,14 @@ const STORY = {
       {
         speaker: "heroine",
         tone: "спокойствие",
+        portraits: {
+          left: {
+            role: "heroine",
+            src: () => CONFIG.assets.gardenNatashaCalm,
+            fallbackSrc: () => CONFIG.assets.introNatashaTrust,
+            alt: () => `${CONFIG.heroineName} в цветочном саду`
+          }
+        },
         text: "Здесь так легко дышать... будто никто ничего от меня не требует."
       },
       {
