@@ -649,23 +649,61 @@ button {
 
 .letter-panel {
   position: absolute;
-  top: 94px;
-  right: 24px;
-  width: min(360px, calc(100% - 48px));
-  padding: 22px 24px;
+  top: 50%;
+  left: 50%;
+  z-index: 6;
+  width: min(460px, calc(100% - 48px));
+  padding: 0;
   opacity: 0;
-  transform: translateY(18px);
+  transform: translate(-50%, -50%) scale(0.94);
   visibility: hidden;
   transition:
-    opacity 500ms ease,
-    transform 500ms ease,
-    visibility 500ms ease;
+    opacity 400ms ease,
+    transform 400ms ease,
+    visibility 400ms ease;
 }
+
+
 
 .letter-panel.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate(-50%, -50%) scale(1);
   visibility: visible;
+}
+
+.letter-cover {
+  width: 100%;
+  padding: 26px 24px;
+  border: 0;
+  border-radius: inherit;
+  background: linear-gradient(160deg, rgba(255, 247, 232, 0.96), rgba(255, 239, 243, 0.93));
+  display: grid;
+  gap: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.letter-cover strong {
+  font-family: "Constantia", "Palatino Linotype", serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #6f5963;
+}
+
+.letter-content {
+  display: none;
+  padding: 22px 24px 22px 24px;
+  max-height: min(68vh, 620px);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.letter-panel.open .letter-cover {
+  display: none;
+}
+
+.letter-panel.open .letter-content {
+  display: block;
 }
 
 .letter-panel h2 {
@@ -675,6 +713,84 @@ button {
   line-height: 0.9;
   font-weight: 400;
   color: #6f5963;
+}
+
+#letterText {
+  font-family: "Constantia", "Palatino Linotype", serif;
+  font-size: 1.08rem;
+  line-height: 1.9;
+  color: rgba(76, 61, 70, 0.92);
+  white-space: pre-line;
+  text-wrap: pretty;
+}
+
+.letter-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.letter-content::-webkit-scrollbar-thumb {
+  background: rgba(139, 110, 123, 0.35);
+  border-radius: 999px;
+}
+
+.letter-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+}
+
+.app-shell.letter-focus .scene-layout,
+.app-shell.letter-focus #portraitStage,
+.app-shell.letter-focus #dialogPanel {
+  filter: blur(6px) saturate(0.95);
+}
+
+.app-shell.adventure-mode .quest-badge {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.app-shell.adventure-mode .scene-layout {
+  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
+}
+
+.app-shell.adventure-mode .status-panel {
+  gap: 10px;
+}
+
+.app-shell.adventure-mode .status-panel .panel-card {
+  padding: 14px 14px 12px;
+}
+
+.app-shell.adventure-mode .small-label {
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+}
+
+.app-shell.adventure-mode #locationLabel {
+  font-size: 1rem;
+}
+
+.app-shell.adventure-mode .fragment-chip {
+  padding: 8px 10px;
+}
+
+.app-shell.adventure-mode .fragment-chip strong {
+  font-size: 0.93rem;
+}
+
+.app-shell.adventure-mode .fragment-chip span {
+  font-size: 0.8rem;
+}
+
+.app-shell.adventure-mode .dialog-panel {
+  width: min(900px, calc(100% - 52px));
+  padding: 18px 20px 18px;
+}
+
+.app-shell.adventure-mode .dialog-text {
+  min-height: 92px;
+  font-size: 1rem;
 }
 
 .notice {
@@ -839,11 +955,11 @@ noscript {
   }
 
   .letter-panel {
-    position: relative;
-    top: auto;
+    width: min(92vw, 460px);
+    left: 50%;
+    top: 50%;
     right: auto;
-    width: min(100%, 640px);
-    margin: 18px auto 0;
+    margin: 0;
   }
 
   .dialog-panel {

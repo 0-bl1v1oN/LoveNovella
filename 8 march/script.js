@@ -11,7 +11,7 @@ const CONFIG = {
   heroineName: "Наташа",
   warmName: "Натусик",
   springName: "Весна",
-  personalLetter: "Здесь будет твое личное письмо. Замени этот текст в CONFIG.personalLetter внутри script.js, и оно автоматически появится в финале.",
+  personalLetter: `Привет, малышка. Знаю, что ты, скорее всего, будешь ругаться из-за того, что проект ещё не доделан до конца, но мне так хотелось отдать его тебе именно сегодня. Тем более я и без того уже задержал сроки. Понимаю, что тебя, возможно, начинают утомлять все эти сайты и приложения, но я будто просто нашёл свою нишу — место, в котором могу делать тебе подарки спокойно и безопасно, не переживая, что их увидит кто-то лишний.\n\nЕсли честно, мне иногда просто не хватает тебя. И я понимаю, насколько эгоистично это звучит, потому что ты и так стараешься быть рядом со мной настолько, насколько это вообще возможно. Ты даёшь мне те чувства, которые можешь дать, делаешь то, на что у тебя есть силы, и в целом очень много вкладываешь в меня. Было бы почти преступлением просить от тебя чего-то большего. Просто иногда мне особенно хочется верить и чувствовать, что мои объятия, цветы, поцелуи, подарки, слова, поддержка, подколы и истории значат для тебя чуть больше, чем просто то, к чему мы с тобой однажды аккуратно пришли и как это между собой назвали.\n\nМне нравится устраивать для тебя праздник не только по календарю. Нравится выбираться с тобой куда-то, проводить время вместе, что-то придумывать, что-то создавать. Клянусь, без тебя мне было бы очень тяжело. Невероятно тяжело. Я, может быть, и справился бы, но ценой каких-то совершенно колоссальных усилий. Твой вклад в мою жизнь настолько огромен и очевиден, что, кажется, я ещё сверху тебе должен, хаха.\n\nТы замечательный человек. И я очень надеюсь, что однажды ты придёшь к той жизни, в которой захочешь выйти за пределы своего привычного мира, создать семью, готовить завтраки по утрам, ходить дома в одной рубашке, смеяться искренне и громко, не думая о том, что тебя кто-то услышит. Обнимать человека и смотреть на него с такой любовью, потому что рядом с ним ты день за днём становишься счастливее.\n\nСпасибо тебе за то, что ты есть. С прошедшим тебя праздником. И доброй ночи.`,
   assets: {
     
     introSpring: "assets/scene-intro-spring.png",
@@ -26,7 +26,13 @@ const CONFIG = {
     gardenNatashaSmile: "assets/scene-garden-natasha-smile.png",
     gardenNatashaCalm: "assets/scene-garden-natasha-calm.png",
     keySigil: "assets/key-sigil.svg",
-    music: "assets/music-spring.mp3",
+    music: "assets/Sappheiros - Embrace.mp3",
+    musicFallbacks: [
+      "assets/-Sappheiros - Embrace.mp3",
+      "assets/Sappheiros - Embrace.ogg",
+      "assets/Sappheiros - Embrace.wav",
+      "assets/music-spring.mp3"
+    ],
     backgrounds: {
       start: "assets/bg-start.png",
       awakening: "assets/bg-awakening-custom.png",
@@ -35,11 +41,12 @@ const CONFIG = {
       cottage: "assets/bg-cottage-custom.png",
       park: "assets/bg-park-custom.png",
       collectedLight: "assets/bg-collected-light.png",
-      key: "assets/bg-key.svg",
+      key: "assets/bg-key-custom.png",
       finale: "assets/bg-convergence-custom.png"
     }
   },
-  textSpeed: 16
+  textSpeed: 16,
+  musicVolume: 0.1
 };
 
 const FRAGMENTS = {
@@ -89,6 +96,8 @@ const state = {
   storyFinished: false,
   musicWanted: true,
   musicPlaying: false,
+  musicSources: [],
+  musicSourceIndex: 0,
   activeBackgroundIndex: 0,
   noticeTimer: null,
   petalTimer: null
@@ -127,6 +136,7 @@ const ui = {
   nextButton: document.getElementById("nextButton"),
   fragmentList: document.getElementById("fragmentList"),
   letterPanel: document.getElementById("letterPanel"),
+  letterCover: document.getElementById("letterCover"),
   letterText: document.getElementById("letterText"),
   musicToggle: document.getElementById("musicToggle"),
   restartButton: document.getElementById("restartButton"),
@@ -748,7 +758,7 @@ const STORY = {
     label: "Собранный свет",
     location: "Общая линия",
     hint: "Лепесток, искра и шаг складываются в одну тихую правду.",
-    background: "key",
+    background: "collectedLight",
      
     steps: [
       {
@@ -963,16 +973,23 @@ function joinWithAnd(items) {
 
 function init() {
   applyPortraitLayout();
+  setAdventureMode(false);
   ui.keySigil.querySelector("img").src = CONFIG.assets.keySigil;
   ui.letterText.textContent = CONFIG.personalLetter;
 
   setBackground(CONFIG.assets.backgrounds.start, true);
   renderFragments();
+  state.musicSources = getMusicSources();
+  applyMusicSource(0);
   updateMusicButton();
 
-  if (CONFIG.assets.music) {
-    ui.bgMusic.src = CONFIG.assets.music;
+  ui.bgMusic.volume = Math.max(0, Math.min(1, CONFIG.musicVolume ?? 0.25));
+
+  if (state.musicWanted) {
+    attemptMusicPlayback();
   }
+
+ 
 
   ui.startButton.addEventListener("click", beginStory);
   ui.nextButton.addEventListener("click", handleNext);
@@ -980,6 +997,7 @@ function init() {
   ui.restartButton.addEventListener("click", restartStory);
   ui.jumpSceneSelect.addEventListener("change", syncJumpStepOptions);
   ui.jumpToNodeButton.addEventListener("click", jumpToSelectedNode);
+  ui.letterCover.addEventListener("click", openLetter);
   populateJumpSceneOptions();
 
   window.addEventListener("keydown", (event) => {
@@ -999,8 +1017,17 @@ function init() {
 
   ui.bgMusic.addEventListener("error", () => {
     state.musicPlaying = false;
+
+    if (tryNextMusicSource()) {
+      if (state.musicWanted) {
+        attemptMusicPlayback();
+      }
+      showNotice("Текущий аудиофайл не открылся. Пробую следующий вариант трека.");
+      return;
+    }
+
     updateMusicButton();
-    showNotice("Музыка не найдена. Положите файл в assets и проверьте путь в CONFIG.assets.music.");
+    showNotice("Музыка не найдена. Проверьте имя файла в assets и путь в CONFIG.assets.music.");
   });
 
   ui.bgMusic.addEventListener("pause", () => {
@@ -1088,6 +1115,7 @@ function jumpToSelectedNode() {
     state.storyStarted = true;
     ui.startScreen.classList.add("hidden");
     ui.dialogPanel.classList.remove("hidden");
+    setAdventureMode(true);
 
     if (state.musicWanted) {
       attemptMusicPlayback();
@@ -1106,6 +1134,9 @@ function jumpToSelectedNode() {
   syncJumpStepOptions();
   showNotice(`Переход: ${STORY[sceneId].label}, шаг ${state.stepIndex + 1}.`);
 }
+function setAdventureMode(enabled) {
+  ui.appShell.classList.toggle("adventure-mode", Boolean(enabled));
+}
 
 function beginStory() {
   if (state.storyStarted) {
@@ -1116,6 +1147,8 @@ function beginStory() {
   state.storyStarted = true;
 
   ui.startScreen.classList.add("hidden");
+  ui.dialogPanel.classList.remove("hidden");
+  setAdventureMode(true);
   ui.dialogPanel.classList.remove("hidden");
 
   if (state.musicWanted) {
@@ -1132,6 +1165,7 @@ function restartStory() {
   applyPortraitLayout();
   ui.startScreen.classList.remove("hidden");
   ui.dialogPanel.classList.add("hidden");
+  setAdventureMode(false);
   ui.dialogText.textContent = "";
   ui.choiceContainer.innerHTML = "";
   ui.locationLabel.textContent = "Особенное утро";
@@ -1179,6 +1213,11 @@ function enterScene(sceneId) {
   state.replyQueue = [];
   state.pendingSceneId = null;
   state.storyFinished = false;
+
+  if (sceneId === "finale") {
+    hideKey();
+  }
+
 
   const backgroundPath = resolveBackground(scene.background);
   setBackground(backgroundPath);
@@ -1682,13 +1721,28 @@ function hideKey() {
 
 function showLetter() {
   ui.letterText.textContent = CONFIG.personalLetter;
+  ui.appShell.classList.remove("letter-focus");
+  ui.letterPanel.classList.remove("open");
+  ui.letterCover.setAttribute("aria-expanded", "false");
   ui.letterPanel.classList.add("visible");
   ui.letterPanel.classList.remove("hidden");
 }
 
+function openLetter() {
+  if (ui.letterPanel.classList.contains("hidden")) {
+    return;
+  }
+
+  ui.letterPanel.classList.add("open");
+  ui.letterCover.setAttribute("aria-expanded", "true");
+  ui.appShell.classList.add("letter-focus");
+}
+
 function hideLetter() {
-  ui.letterPanel.classList.remove("visible");
+  ui.letterPanel.classList.remove("visible", "open");
   ui.letterPanel.classList.add("hidden");
+  ui.letterCover.setAttribute("aria-expanded", "false");
+  ui.appShell.classList.remove("letter-focus");
 }
 
 function runEffects(effect) {
@@ -1723,7 +1777,7 @@ async function toggleMusic() {
 }
 
 async function attemptMusicPlayback() {
-  if (!CONFIG.assets.music) {
+  if (state.musicSources.length === 0) {
     state.musicWanted = false;
     updateMusicButton();
     showNotice("Укажите путь к музыке в CONFIG.assets.music, чтобы включить трек.");
@@ -1742,7 +1796,7 @@ async function attemptMusicPlayback() {
 }
 
 function updateMusicButton() {
-  if (!CONFIG.assets.music) {
+  if (state.musicSources.length === 0) {
     ui.musicToggle.textContent = "Музыка: файл не задан";
     return;
   }
@@ -1753,6 +1807,27 @@ function updateMusicButton() {
   }
 
   ui.musicToggle.textContent = state.musicPlaying ? "Музыка: вкл" : "Музыка: авто";
+}
+
+function getMusicSources() {
+  const primary = CONFIG.assets.music ? [CONFIG.assets.music] : [];
+  const fallbacks = Array.isArray(CONFIG.assets.musicFallbacks) ? CONFIG.assets.musicFallbacks : [];
+  return [...new Set([...primary, ...fallbacks].filter(Boolean))];
+}
+
+function applyMusicSource(index) {
+  if (index < 0 || index >= state.musicSources.length) {
+    return false;
+  }
+
+  state.musicSourceIndex = index;
+  ui.bgMusic.src = state.musicSources[index];
+  return true;
+}
+
+function tryNextMusicSource() {
+  const nextIndex = state.musicSourceIndex + 1;
+  return applyMusicSource(nextIndex);
 }
 
 function showNotice(message) {

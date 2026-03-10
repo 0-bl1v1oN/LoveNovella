@@ -25,7 +25,7 @@
 
       <div class="control-cluster">
         <details class="quick-nav" id="quickNav">
-          <summary class="control-button">Оглавление (тест)</summary>
+          <summary class="control-button">Оглавление</summary>
           <div class="quick-nav-panel panel-card">
             <label class="quick-nav-label" for="jumpSceneSelect">Сцена</label>
             <select id="jumpSceneSelect"></select>
@@ -105,9 +105,15 @@
       </section>
 
       <section class="letter-panel panel-card hidden" id="letterPanel">
-        <p class="small-label">Личное письмо</p>
-        <h2>От сердца к сердцу</h2>
-        <p id="letterText"></p>
+        <button class="letter-cover" id="letterCover" type="button" aria-expanded="false">
+          <span class="small-label">Личное письмо</span>
+          <strong>Открыть письмо</strong>
+        </button>
+        <div class="letter-content" id="letterContent">
+          <p class="small-label">Личное письмо</p>
+          <h2>От сердца к сердцу</h2>
+          <p id="letterText"></p>
+        </div>
       </section>
 
       <div class="notice" id="noticeBox" role="status" aria-live="polite"></div>
